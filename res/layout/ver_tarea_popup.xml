@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/popup_element"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#00ff00"
+    android:orientation="vertical"
+    android:padding="10sp" >
+
+    <TextView
+        android:id="@+id/verTitulo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/txtTitulo"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/verDesc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/txtDescripcion"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <ListView
+        android:id="@+id/verTaskList"
+        android:layout_width="wrap_content"
+        android:layout_height="108dp"
+        android:layout_weight="1.61" >
+
+    </ListView>
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="286dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.15"
+        android:text="Volver"
+        android:onClick="volver" />
+
+</LinearLayout>
