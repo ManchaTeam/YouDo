@@ -10,6 +10,7 @@ public class Tarea {
 	public String tarea;
 	public String descripcion;
 	private List<String> subtareas = new ArrayList<String>();	
+	private boolean[] subTasksDone = new boolean[0]; 
 	
 	public Tarea(String tarea) {
 		super();
@@ -43,11 +44,31 @@ public class Tarea {
 	}
 	public void setSubtareas(List<String> subtareas) {
 		this.subtareas = subtareas;
+		setSubTasksDone() ;
 	}
+	
+	public void setSubTaskDone(int posicion){
+		subTasksDone[posicion]= true;
+	}
+	
+	public boolean[] getSubTasksDone() {
+		return subTasksDone;
+	}
+	public void setSubTasksDone() {
+		boolean[] aux = new boolean[subtareas.size()];
+		for(int i=0;i<subTasksDone.length;i++){
+			aux[i]=subTasksDone[i];
+		}
+		subTasksDone = aux;
+	}
+	
+	
 	@Override
 	public String toString() {
 		return "Tareas [tarea=" + tarea + ", descripcion=" + descripcion
 				+ "]";
 	}
+	
+	
 
 }

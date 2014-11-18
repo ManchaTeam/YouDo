@@ -19,5 +19,6 @@
     <string name="txtCantSubTareas">Cant. Subtareas:</string>
     <string name="txtAddSubTask">Agregar Subtarea</string>
     <string name="btnCancelar">Cancelar</string>
+    <string name="action_add">Add</string>
     
 </resources>

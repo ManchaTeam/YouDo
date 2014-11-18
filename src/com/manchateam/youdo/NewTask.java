@@ -31,7 +31,7 @@ import android.widget.TextView;
 
 public class NewTask extends ActionBarActivity {
 
-	//private String[] subtareas = new String[0];
+	private String[] subtareas = new String[0];
 	private List<String> nombres = new ArrayList<String>();
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -125,7 +125,7 @@ public class NewTask extends ActionBarActivity {
 	}
 	//Este metodo elimina la subtarea seleccionada por long click
 	public void eliminarSubTask(int row){
-		//String[] listaAux = new String[nombres.size() - 1];
+		String[] listaAux = new String[nombres.size() - 1];
 		List<String> arrayAux = new ArrayList<String>();
 
 

@@ -11,8 +11,10 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.Fragment.SavedState;
 import android.app.FragmentManager;
+import android.content.ClipData.Item;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -43,6 +45,7 @@ public class Main extends Activity implements NavigationDrawerFragment.Navigatio
 	private PopupWindow pwindo;
 	private NavigationDrawerFragment mNavigationDrawerFragment;
 	private CharSequence mTitle;
+	private int currentTarea;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -60,9 +63,15 @@ public class Main extends Activity implements NavigationDrawerFragment.Navigatio
 				(DrawerLayout) findViewById(R.id.drawer_layout));
 
 
-		ListView lv = (ListView) findViewById(R.id.listView);
+		
+		//Intento para elimiar las sub tareas ya creadas by Renzo 
+		
+		
 		
 		//Que hacer cuando un item de la lista principal es seleccionado
+
+		ListView lv = (ListView) findViewById(R.id.listView);
+		
 		lv.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
@@ -91,6 +100,7 @@ public class Main extends Activity implements NavigationDrawerFragment.Navigatio
 			        	   aux = eliminarTareaFromList(position,aux);
 			        	   ListaTareas.setLista(aux);
 			        	   refrescarLista();
+			        	   
 			           }
 			       });
 				cartel.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
@@ -98,17 +108,24 @@ public class Main extends Activity implements NavigationDrawerFragment.Navigatio
 			               // User cancelled the dialog
 
 			           }
+			           
 			       });
 			
 				AlertDialog dialog = cartel.create();
 				dialog.show();
-				return false;
+				return true;
 			}
         });
 		
 	}
 
 
+	public void refreshSubTareasPopUpList(){
+		Tarea tarea = ListaTareas.getTareas()[currentTarea];
+		ListView lv = (ListView) pwindo.getContentView().findViewById(R.id.verTaskList);
+		ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, tarea.getSubtareas().toArray());
+		lv.setAdapter(adapter);
+	}
 
 
 
@@ -120,10 +137,11 @@ public class Main extends Activity implements NavigationDrawerFragment.Navigatio
 	}
 
 
+	
 	//Este metodo inica el popUpWindow
 	private void initiatePopupWindow(int p) {
 		try {
-			
+			currentTarea =p;
 			// We need to get the instance of the LayoutInflater
 			Display display = getWindowManager().getDefaultDisplay(); 
 
@@ -137,8 +155,50 @@ public class Main extends Activity implements NavigationDrawerFragment.Navigatio
 			ListView lv = (ListView) pwindo.getContentView().findViewById(R.id.verTaskList);
 			titulo.append(" "+tarea.getTarea());
 			desc.append(" "+tarea.getDescripcion());
-			ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, tarea.getSubtareas().toArray());
+			
+			ArrayList<ModelCheckBox> modelArray = new ArrayList<ModelCheckBox>();
+			
+			for(int i = 0; i<tarea.getSubtareas().size();i++){
+				modelArray.add(i, new ModelCheckBox(tarea.getSubtareas().get(i), tarea.getSubTasksDone()[i]));
+			}
+
+			AdapterCheckBox adapter = new AdapterCheckBox(this, modelArray);
+
 			lv.setAdapter(adapter);
+			
+			lv.setOnItemLongClickListener(new OnItemLongClickListener() {
+				@Override
+				public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+						int arg2, long arg3) {
+					// TODO Auto-generated method stub
+					System.out.println("GNGONFGIONFSFNGSIGSODNOIGDSNSIOGDNGDSIOGSDNO");
+					final int listnumber = arg2;
+					AlertDialog.Builder cartel = new AlertDialog.Builder(Main.this);
+					cartel.setMessage("Seguro que desea eliminar?")
+				       .setTitle("Eliminar");
+					cartel.setPositiveButton("Eliminar", new DialogInterface.OnClickListener() {
+				           public void onClick(DialogInterface dialog, int id) {
+				               //User clicked OK button
+				        	   Tarea[] tareasAux = ListaTareas.getTareas();
+				        	   List<String> aux = ListaTareas.getTareas()[currentTarea].getSubtareas();
+				        	   aux = eliminarStringFromList(listnumber, aux);
+				        	   tareasAux[currentTarea].setSubtareas(aux); 
+				        	   ListaTareas.setLista(tareasAux);
+				        	   refreshSubTareasPopUpList();
+				           }
+				       });
+					cartel.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+				           public void onClick(DialogInterface dialog, int id) {
+				               // User cancelled the dialog
+
+				           }
+				       });
+					cartel.show();
+					return true;
+
+				}
+
+			});
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -187,8 +247,7 @@ public class Main extends Activity implements NavigationDrawerFragment.Navigatio
         }
         stringList = arrayAux;
 		ListView list = (ListView) findViewById(R.id.listSubTask);
-        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, stringList.toArray());
-		list.setAdapter(adapter);
+
 		return stringList;
 	}
 	
@@ -205,6 +264,12 @@ public class Main extends Activity implements NavigationDrawerFragment.Navigatio
 		return super.onCreateOptionsMenu(menu);
 	}
 	
+	//Esto se ejecuta cuando se cierre la ventana abierta, refrescando la lista de tareas
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		refrescarLista();
+	}
+	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle action bar item clicks here. The action bar will
@@ -213,6 +278,12 @@ public class Main extends Activity implements NavigationDrawerFragment.Navigatio
 		int id = item.getItemId();
 		
 		if (id == R.id.action_settings) {
+			return true;
+		}
+		if (id == R.id.action_add) {
+			//Si el item seleccionado es el boton de añadir se abre la ventana NewTask
+			Intent intent = new Intent(this, NewTask.class);
+			startActivityForResult(intent, 0);
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -225,13 +296,13 @@ public class Main extends Activity implements NavigationDrawerFragment.Navigatio
 		ListView lv = (ListView) findViewById(R.id.listView);
 		
 		Tarea[] list = ListaTareas.getTareas();
-		List<String> nombres = new ArrayList<String>();
+		ArrayList<Model> nombres = new ArrayList<Model>();
 		
 		for(int i = 0; i<list.length;i++) {
-			nombres.add(list[i].getTarea());
+			nombres.add(new Model("  "+list[i].getTarea(),""));
 		}
 		
-		ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, nombres.toArray());
+		MyAdapter adapter = new MyAdapter(this, nombres);
 		lv.setAdapter(adapter);
 		
 	

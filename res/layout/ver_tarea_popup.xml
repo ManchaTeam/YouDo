@@ -3,9 +3,11 @@
     android:id="@+id/popup_element"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="#00ff00"
+    android:background="#FFFFBB33"
     android:orientation="vertical"
-    android:padding="10sp" >
+    android:padding="10sp" 
+    android:descendantFocusability="blocksDescendants">
+
 
     <TextView
         android:id="@+id/verTitulo"
@@ -23,7 +25,7 @@
 
     <ListView
         android:id="@+id/verTaskList"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="108dp"
         android:layout_weight="1.61" >
 

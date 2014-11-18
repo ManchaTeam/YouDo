@@ -5,7 +5,7 @@
     android:focusableInTouchMode="true"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@drawable/fonfo"
+    android:background="@drawable/fonfoaddsub"
     android:orientation="vertical"
     android:padding="10sp" >
 
