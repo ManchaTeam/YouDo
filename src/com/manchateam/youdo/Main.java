@@ -123,10 +123,17 @@ public class Main extends Activity implements NavigationDrawerFragment.Navigatio
 	public void refreshSubTareasPopUpList(){
 		Tarea tarea = ListaTareas.getTareas()[currentTarea];
 		ListView lv = (ListView) pwindo.getContentView().findViewById(R.id.verTaskList);
-		ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, tarea.getSubtareas().toArray());
+		
+		ArrayList<ModelCheckBox> modelArray = new ArrayList<ModelCheckBox>();
+		
+		for(int i = 0; i<tarea.getSubtareas().size();i++){
+			modelArray.add(i, new ModelCheckBox(tarea.getSubtareas().get(i), tarea.getSubTasksDone()[i]));
+		}
+
+		AdapterCheckBox adapter = new AdapterCheckBox(this, modelArray, currentTarea);
+
 		lv.setAdapter(adapter);
 	}
-
 
 
 	public void restoreActionBar() {
@@ -162,7 +169,7 @@ public class Main extends Activity implements NavigationDrawerFragment.Navigatio
 				modelArray.add(i, new ModelCheckBox(tarea.getSubtareas().get(i), tarea.getSubTasksDone()[i]));
 			}
 
-			AdapterCheckBox adapter = new AdapterCheckBox(this, modelArray);
+			AdapterCheckBox adapter = new AdapterCheckBox(this, modelArray, currentTarea);
 
 			lv.setAdapter(adapter);
 			
@@ -179,11 +186,8 @@ public class Main extends Activity implements NavigationDrawerFragment.Navigatio
 					cartel.setPositiveButton("Eliminar", new DialogInterface.OnClickListener() {
 				           public void onClick(DialogInterface dialog, int id) {
 				               //User clicked OK button
-				        	   Tarea[] tareasAux = ListaTareas.getTareas();
-				        	   List<String> aux = ListaTareas.getTareas()[currentTarea].getSubtareas();
-				        	   aux = eliminarStringFromList(listnumber, aux);
-				        	   tareasAux[currentTarea].setSubtareas(aux); 
-				        	   ListaTareas.setLista(tareasAux);
+				        	   ListaTareas.getTareas()[currentTarea].eliminarSubTarea(listnumber);
+				        	   
 				        	   refreshSubTareasPopUpList();
 				           }
 				       });
@@ -206,6 +210,7 @@ public class Main extends Activity implements NavigationDrawerFragment.Navigatio
 	
 	public void volver(View view){
 		pwindo.dismiss();
+		refrescarLista();
 	}
 	
 	public Tarea[] eliminarTareaFromList(int row, Tarea[] list){
@@ -299,7 +304,9 @@ public class Main extends Activity implements NavigationDrawerFragment.Navigatio
 		ArrayList<Model> nombres = new ArrayList<Model>();
 		
 		for(int i = 0; i<list.length;i++) {
-			nombres.add(new Model("  "+list[i].getTarea(),""));
+
+			nombres.add(new Model("  "+list[i].getTarea(),
+					Integer.toString(ListaTareas.getTareas()[i].getDonePercent())+"%"));
 		}
 		
 		MyAdapter adapter = new MyAdapter(this, nombres);

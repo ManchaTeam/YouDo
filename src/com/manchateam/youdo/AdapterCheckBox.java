@@ -9,23 +9,27 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
  
 public class AdapterCheckBox extends ArrayAdapter<ModelCheckBox> {
  
         private final Context context;
         private final ArrayList<ModelCheckBox> modelsArrayList;
- 
-        public AdapterCheckBox(Context context, ArrayList<ModelCheckBox> modelsArrayList) {
+        private boolean usado = false;
+        private int tarea;
+        
+        public AdapterCheckBox(Context context, ArrayList<ModelCheckBox> modelsArrayList, int tarea) {
  
             super(context, R.layout.adapter_checkbox, modelsArrayList);
- 
+            this.tarea=tarea;
             this.context = context;
             this.modelsArrayList = modelsArrayList;
         }
  
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(final int position, View convertView, ViewGroup parent) {
  
             // 1. Create inflater 
             LayoutInflater inflater = (LayoutInflater) context
@@ -46,6 +50,19 @@ public class AdapterCheckBox extends ArrayAdapter<ModelCheckBox> {
                // imgView.setImageResource(modelsArrayList.get(position).getIcon());
                 titleView.setText(modelsArrayList.get(position).getTitle());
                 counterView.setChecked(modelsArrayList.get(position).getCounter());
+                counterView.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+					
+					@Override
+					public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+						// TODO Auto-generated method stub
+						if(ListaTareas.getTareas()[tarea].getSubTasksDone()[position]){
+							ListaTareas.getTareas()[tarea].setSubTaskUndo(position);
+						}
+						else{
+							ListaTareas.getTareas()[tarea].setSubTaskDone(position);
+						}
+					}
+				});
             }
             else{
             		/* POR AHORA NADA
@@ -55,6 +72,8 @@ public class AdapterCheckBox extends ArrayAdapter<ModelCheckBox> {
             	 	*/
             }
  
+            //Le digo que es longClickeable
+            rowView.setLongClickable(true);
             // 5. retrn rowView
             return rowView;
         }

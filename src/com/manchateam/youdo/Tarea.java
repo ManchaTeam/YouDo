@@ -47,8 +47,47 @@ public class Tarea {
 		setSubTasksDone() ;
 	}
 	
+	public void eliminarSubTarea(int posicion){
+		List<String> aux = new ArrayList<String>();	
+		int cont =0;
+		for (int i = 0; i<subtareas.size();i++){
+			if(i!=posicion){
+				aux.add(subtareas.get(i));
+			}
+		}
+		subtareas = aux;
+		eliminarSubTaskBoolean(posicion);
+	}
+	
+	public void eliminarSubTaskBoolean(int posicion){
+		boolean[] aux = new boolean[subTasksDone.length-1];
+		int cont =0;
+		for (int i = 0; i<subTasksDone.length;i++){
+			if(i!=posicion){
+				aux[cont]=subTasksDone[i];
+				cont++;
+			}
+		}
+		subTasksDone = aux;
+	}
+	
 	public void setSubTaskDone(int posicion){
 		subTasksDone[posicion]= true;
+	}
+	public void setSubTaskUndo(int posicion){
+		subTasksDone[posicion]= false;
+	}
+	
+	public int getDonePercent(){
+		int porcentaje;
+		int cantDone=0;
+		for(int i = 0;i< subTasksDone.length;i++){
+			if(subTasksDone[i]){
+				cantDone++;
+			}
+		}
+		porcentaje = cantDone * 100 / subTasksDone.length;
+		return porcentaje;
 	}
 	
 	public boolean[] getSubTasksDone() {
