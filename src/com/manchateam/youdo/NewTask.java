@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.support.v7.app.ActionBarActivity;
+import android.annotation.SuppressLint;
 import android.app.ActionBar.LayoutParams;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -28,6 +29,7 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class NewTask extends ActionBarActivity {
 
@@ -145,21 +147,27 @@ public class NewTask extends ActionBarActivity {
 
 	}
 	//Este metodo guarda la subtarea en la lista y la muestra en la ListView 
+	@SuppressLint("NewApi")
 	public void guardarSubTask(View view){
 		EditText we = (EditText) pwindo.getContentView().findViewById(R.id.txbSubTarea);		
 		String texto = we.getText().toString();
-
 		ListView list = (ListView) findViewById(R.id.listSubTask);
 
-		nombres.add(texto);
-		
-		ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, nombres.toArray());
-		list.setAdapter(adapter);
-		InputMethodManager imm = (InputMethodManager)getSystemService(
-			      Context.INPUT_METHOD_SERVICE);
-			imm.hideSoftInputFromWindow(we.getWindowToken(), 0);
-		//cierra el popUpWindow
-		pwindo.dismiss();
+		//if que no guarda cosas en blanco
+		if (texto.trim().isEmpty()){
+			pwindo.dismiss();}
+		else {
+	
+			nombres.add(texto);
+			
+			ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, nombres.toArray());
+			list.setAdapter(adapter);
+			InputMethodManager imm = (InputMethodManager)getSystemService(
+				      Context.INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(we.getWindowToken(), 0);
+			//cierra el popUpWindow
+			pwindo.dismiss();
+		}
 	}
 	
 	
@@ -184,6 +192,7 @@ public class NewTask extends ActionBarActivity {
 		ListaTareas.addTarea(aux);
 		
 		finish();
+		
 	}
 
 	

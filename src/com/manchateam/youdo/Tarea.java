@@ -81,6 +81,7 @@ public class Tarea {
 	public int getDonePercent(){
 		int porcentaje;
 		int cantDone=0;
+		if(subTasksDone.length != 0){
 		for(int i = 0;i< subTasksDone.length;i++){
 			if(subTasksDone[i]){
 				cantDone++;
@@ -88,6 +89,10 @@ public class Tarea {
 		}
 		porcentaje = cantDone * 100 / subTasksDone.length;
 		return porcentaje;
+		}
+		else{
+			return 0;
+		}
 	}
 	
 	public boolean[] getSubTasksDone() {

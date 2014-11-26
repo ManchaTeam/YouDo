@@ -298,16 +298,16 @@ public class Main extends Activity implements NavigationDrawerFragment.Navigatio
 	
 	public void refrescarLista() {
 	// TODO Refrescar lista
+		List<String> nada = new ArrayList<String>(0);
 		ListView lv = (ListView) findViewById(R.id.listView);
 		
 		Tarea[] list = ListaTareas.getTareas();
 		ArrayList<Model> nombres = new ArrayList<Model>();
 		
 		for(int i = 0; i<list.length;i++) {
-
 			nombres.add(new Model("  "+list[i].getTarea(),
 					Integer.toString(ListaTareas.getTareas()[i].getDonePercent())+"%"));
-		}
+			}
 		
 		MyAdapter adapter = new MyAdapter(this, nombres);
 		lv.setAdapter(adapter);
